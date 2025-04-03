@@ -1,0 +1,14 @@
+# Build cache directory for clangd
+/.cache/
+
+# Build cache directory for ccls
+/.ccls-cache/
+
+# Environment cache directory for direnv
+/.direnv/
+
+# Symlink'd output of nix builds
+result
+
+# Per-system tooling configuration, primarily for CCLS here
+compile_commands.json
