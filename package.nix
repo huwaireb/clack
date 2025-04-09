@@ -6,15 +6,12 @@
   glfw,
   ...
 }:
-let
-  fs = lib.fileset;
-in
 stdenv.mkDerivation {
-  pname = "calculator";
+  pname = "clack";
   version = "0.1.0";
-  src = fs.toSource {
+  src = lib.fileset.toSource {
     root = ./.;
-    fileset = fs.unions [ ./src ];
+    fileset = lib.fileset.unions [ ./src ];
   };
 
   outputs = [
@@ -46,13 +43,13 @@ stdenv.mkDerivation {
   buildPhase = ''
     $CXX src/main.cc -limgui -lglfw \
                      ${lib.optionalString stdenv.isDarwin "-framework OpenGL"} \
-                     -o calculator -MJ calculator.o.json $FLAGS
+                     -o clack -MJ clack.o.json $FLAGS
   '';
 
   installPhase = ''
-    install -D -t $out/bin calculator
+    install -D -t $out/bin clack
     install -D -t $development/fragments *.o.json
   '';
 
-  meta.mainProgram = "calculator";
+  meta.mainProgram = "clack";
 }

@@ -1,22 +1,20 @@
 {
-  description = "huwaireb/dsa.calculator: Mini Project 1 for EECE350";
+  description = ''
+    huwaireb/clack: A calculator written in C++23 with a GUI using imgui. Built with Nix (SP)
+  '';
 
   outputs =
     inputs@{ parts, ... }:
     parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "aarch64-darwin" ];
       perSystem =
-        {
-          lib,
-          pkgs,
-          config,
-          ...
-        }:
+        { pkgs, config, ... }:
         let
           llvm = pkgs.llvmPackages_19;
           stdenv = llvm.stdenv;
         in
         {
-          packages.calculator = pkgs.callPackage ./package.nix { inherit stdenv llvm; };
+          packages.clack = pkgs.callPackage ./package.nix { inherit stdenv llvm; };
 
           devShells.default = pkgs.mkShell.override { inherit stdenv; } {
             packages = [ (pkgs.ccls.override { llvmPackages = llvm; }) ];
@@ -25,13 +23,13 @@
 
           apps.ccdb = {
             type = "app";
-            program = lib.getExe (
+            program = pkgs.lib.getExe (
               pkgs.writeShellApplication {
                 name = "ccdb";
                 runtimeInputs = [ pkgs.gnused ];
                 text =
                   let
-                    proj = config.packages.calculator.development;
+                    proj = config.packages.clack.development;
                   in
                   ''
                     sed  -e '1s/^/[\n/' -e '$s/,$/\n]/' \
@@ -43,9 +41,8 @@
             );
           };
 
-          packages.default = config.packages.calculator;
+          packages.default = config.packages.clack;
         };
-      systems = [ "aarch64-darwin" ];
     };
 
   inputs = {
